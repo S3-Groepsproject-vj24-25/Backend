@@ -5,17 +5,16 @@ namespace Dal;
 
 public class RestaurandContext : DbContext
 {
+    public RestaurandContext(DbContextOptions options) : base(options)
+    {
+    }
+
     public DbSet<Table> Tables { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<MenuItem> MenuItems { get; set; }
     public DbSet<Addition> Additions { get; set; }
     public DbSet<OrderMenuItem> OrderMenuItems { get; set; }
     public DbSet<AdditionMenuItem> AdditionMenuItems { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlServer("YourConnectionStringHere");
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -39,3 +38,4 @@ public class RestaurandContext : DbContext
             .WithMany()
             .HasForeignKey(m => m.MenuItemID);
     }
+}
