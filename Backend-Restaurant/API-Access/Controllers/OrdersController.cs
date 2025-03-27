@@ -14,7 +14,6 @@ namespace API_Access.Controllers
             _orderService = orderService;
         }
 
-
         [HttpGet("kitchen")]
         public IActionResult GetKitchenOrders()
         {
@@ -26,6 +25,13 @@ namespace API_Access.Controllers
         public IActionResult GetBarOrders()
         {
             var orders = _orderService.GetOrdersByType("Drink");
+            return Ok(orders);
+        }
+
+        [HttpGet("status")]
+        public IActionResult GetOrdersByStatus(string status)
+        {
+            var orders = _orderService.GetOrdersByStatus(status);
             return Ok(orders);
         }
 
@@ -54,7 +60,6 @@ namespace API_Access.Controllers
             {
                 return BadRequest();
             }
-
             _orderService.UpdateOrder(order);
             return NoContent();
         }
@@ -63,6 +68,13 @@ namespace API_Access.Controllers
         public IActionResult DeleteOrder(int id)
         {
             _orderService.DeleteOrder(id);
+            return NoContent();
+        }
+
+        [HttpPost("{id}/start")]
+        public IActionResult StartOrderPreparation(int id)
+        {
+            _orderService.StartOrderPreparation(id);
             return NoContent();
         }
 

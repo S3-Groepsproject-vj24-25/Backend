@@ -15,5 +15,7 @@ namespace Models
         [Required(ErrorMessage = "Description is required.")]
         public string Description { get; set; }
         public bool IsCompleted { get; set; }
+        [Required]
+        public string Status { get; set; } = "Pending"; // should this be saved in db?
     }
 }

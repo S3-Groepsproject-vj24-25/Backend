@@ -21,6 +21,11 @@ namespace Dal
             return _orders.Where(o => o.Type == type).ToList();
         }
 
+        public List<Order> GetOrdersByStatus(string status)
+        {
+            return _orders.Where(o => o.Status == status).ToList();
+        }
+
         public Order GetOrderById(int id)
         {
             return _orders.FirstOrDefault(o => o.Id == id);

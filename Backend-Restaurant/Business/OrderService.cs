@@ -16,7 +16,6 @@ namespace Business
             _orderRepository = orderRepository;
         }
 
-
         public List<Order> GetOrdersByType(string type)
         {
             return _orderRepository.GetOrdersByType(type);
@@ -29,6 +28,8 @@ namespace Business
 
         public void AddOrder(Order order)
         {
+            //default status = pending
+            order.Status = "Pending";
             _orderRepository.AddOrder(order);
         }
 
@@ -42,9 +43,30 @@ namespace Business
             _orderRepository.DeleteOrder(id);
         }
 
+        public void StartOrderPreparation(int id)
+        {
+            var order = _orderRepository.GetOrderById(id);
+            if (order != null)
+            {
+                order.Status = "Preparing";
+                _orderRepository.UpdateOrder(order);
+            }
+        }
+
         public void CompleteOrder(int id)
         {
-            _orderRepository.CompleteOrder(id);
+            var order = _orderRepository.GetOrderById(id);
+            if (order != null)
+            {
+                order.Status = "Completed";
+                order.IsCompleted = true;
+                _orderRepository.UpdateOrder(order);
+            }
+        }
+
+        public List<Order> GetOrdersByStatus(string status)
+        {
+            return _orderRepository.GetOrdersByStatus(status);
         }
     }
 }

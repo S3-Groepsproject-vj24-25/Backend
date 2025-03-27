@@ -10,6 +10,8 @@ namespace Models
     {
         List<Order> GetOrdersByType(string type);
         Order GetOrderById(int id);
+        List<Order> GetOrdersByStatus(string status);
+        void StartOrderPreparation(int id);
         void AddOrder(Order order);
         void UpdateOrder(Order order);
         void DeleteOrder(int id);
