@@ -3,11 +3,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dal;
 
-public class RestaurandContext : DbContext
+public class RestaurantDbContext : DbContext
 {
-    public RestaurandContext(DbContextOptions options) : base(options)
-    {
-    }
+    //Here you have to change the connection string.
+    //The default if you set up a local db and named it Backend_Restaurant is: "Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Backend_Restaurant".
+    //Change if required.
+    protected override void OnConfiguring(DbContextOptionsBuilder options)
+        => options.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Backend_Restaurant");
+
+
 
     public DbSet<Table> Tables { get; set; }
     public DbSet<Order> Orders { get; set; }
