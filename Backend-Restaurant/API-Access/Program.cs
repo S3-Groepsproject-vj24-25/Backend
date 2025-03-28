@@ -1,6 +1,7 @@
 using Dal;
 using Microsoft.EntityFrameworkCore;
-
+using Dal.Models;
+using Business;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,12 +12,13 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<QrCodeService>();
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<RestaurandDbContext>();
+    //var services = scope.ServiceProvider;
+    //var context = services.GetRequiredService<RestaurandContext>();
 }
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
