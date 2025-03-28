@@ -1,6 +1,6 @@
 ﻿namespace Dal.Models;
 
-public class ModificationMenuItems
+public class ModificationMenuItem
 {
     public int ID { get; set; }
     public int ModificationID { get; set; }
