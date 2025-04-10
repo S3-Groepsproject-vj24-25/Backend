@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35818.85 d17.13
+VisualStudioVersion = 17.13.35818.85
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API-Access", "API-Access\API-Access.csproj", "{E7D5A53F-8384-4A6B-82BD-7E5C7229ECF5}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dal", "Dal\Dal.csproj", "{B8ED0A69-B489-4110-8E3E-6811B28AB516}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{39711C94-C3FE-4435-8F13-44BAC5CBD5D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{B8A8ECF8-1359-477A-A46B-37F422E9D9E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{39711C94-C3FE-4435-8F13-44BAC5CBD5D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39711C94-C3FE-4435-8F13-44BAC5CBD5D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39711C94-C3FE-4435-8F13-44BAC5CBD5D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8A8ECF8-1359-477A-A46B-37F422E9D9E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8A8ECF8-1359-477A-A46B-37F422E9D9E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8A8ECF8-1359-477A-A46B-37F422E9D9E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8A8ECF8-1359-477A-A46B-37F422E9D9E0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

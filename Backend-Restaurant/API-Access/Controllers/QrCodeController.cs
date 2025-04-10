@@ -20,7 +20,7 @@ namespace API_Access.Controllers
         public IActionResult GetTableQrCode(int tableId)
         {
             string baseUrl = _configuration["ApplicationUrl"] ?? $"{Request.Scheme}://{Request.Host}";
-            string qrContent = $"{baseUrl}/api/tables/scan/{tableId}";
+            string qrContent = $"{baseUrl}/WILLEM/table/{tableId}";
 
             byte[] qrCodeImage = _qrCodeService.GenerateQrCode(qrContent);
             return File(qrCodeImage, "image/png");
