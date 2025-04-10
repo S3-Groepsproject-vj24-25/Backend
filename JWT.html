@@ -72,9 +72,16 @@
             document.getElementById('decodedOutput').textContent = 
                 JSON.stringify(decodedOutput, null, 2);
         }
-
-        // Generate initial token on page load
-        generateToken();
+            
+        function getTableNumberFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tableParam = urlParams.get('table');
+            if (tableParam) {
+                document.getElementById('tableNumber').value = tableParam;
+            }
+            generateToken();
+        }
+        window.onload = getTableNumberFromURL;
     </script>
 </body>
 </html>
