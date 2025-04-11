@@ -10,12 +10,12 @@ namespace Models
     public class Order
     {
         public int Id { get; set; }
+        public int TableNumber { get; set; }
         [Required(ErrorMessage = "Type is required.")]
-        public string Type { get; set; } // food or drink
-        [Required(ErrorMessage = "Description is required.")]
-        public string Description { get; set; }
+        public List<OrderItem> Items { get; set; } = new List<OrderItem>();
         public bool IsCompleted { get; set; }
         [Required]
         public string Status { get; set; } = "Pending"; // should this be saved in db?
+        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
     }
 }

@@ -1,13 +1,9 @@
 ﻿using Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Business
 {
-    public class OrderService:IOrderService
+    public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
 
@@ -28,8 +24,13 @@ namespace Business
 
         public void AddOrder(Order order)
         {
-            //default status = pending
+            
             order.Status = "Pending";
+            foreach (var item in order.Items)
+            {
+                item.TotalPrice = item.Price * item.Quantity;
+            }
+
             _orderRepository.AddOrder(order);
         }
 
@@ -58,7 +59,7 @@ namespace Business
             var order = _orderRepository.GetOrderById(id);
             if (order != null)
             {
-                order.Status = "Completed";
+                order.Status = "Completed"; 
                 order.IsCompleted = true;
                 _orderRepository.UpdateOrder(order);
             }
