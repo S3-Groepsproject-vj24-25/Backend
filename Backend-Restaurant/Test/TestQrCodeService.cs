@@ -29,8 +29,6 @@ namespace Test
             LastCalledPixelsPerModule = pixelsPerModule;
             return _returnValue;
         }
-
-        // Properties to track method calls
         public string LastCalledContent { get; private set; }
         public int LastCalledPixelsPerModule { get; private set; }
     }

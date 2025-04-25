@@ -19,8 +19,8 @@ namespace API_Access.Controllers
         [HttpGet("table/{tableId}")]
         public IActionResult GetTableQrCode(int tableId)
         {
-            string baseUrl = _configuration["ApplicationUrl"] ?? $"{Request.Scheme}://{Request.Host}";
-            string qrContent = $"{baseUrl}/WILLEM/table/{tableId}";
+            string frontendUrl = "https://willemfrontend-fhfbeaewa5h0e3fw.germanywestcentral-01.azurewebsites.net";
+            string qrContent = $"{frontendUrl}/table/{tableId}";
 
             byte[] qrCodeImage = _qrCodeService.GenerateQrCode(qrContent);
             return File(qrCodeImage, "image/png");

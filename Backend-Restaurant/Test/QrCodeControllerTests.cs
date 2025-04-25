@@ -24,12 +24,9 @@ namespace Test
             var mockConfiguration = new Mock<IConfiguration>();
             var tableId = 123;
 
-            var testUrl = "https://test.com";
-            mockConfiguration.Setup(c => c["ApplicationUrl"]).Returns(testUrl);
-
             var controller = new QrCodeController(qrCodeService, mockConfiguration.Object);
 
-            // HttpContext for the controller
+            // Setup for the controller
             var httpContext = new DefaultHttpContext();
             controller.ControllerContext = new ControllerContext
             {
@@ -44,45 +41,8 @@ namespace Test
             Assert.Equal("image/png", fileResult.ContentType);
             Assert.Equal(fakeQrCodeBytes, fileResult.FileContents);
 
-            // Verify URL
-            var expectedQrContent = $"{testUrl}/WILLEM/table/{tableId}";
-            Assert.Equal(expectedQrContent, qrCodeService.LastCalledContent);
-        }
-
-        [Fact]
-        public void GetTableQrCode_WithoutApplicationUrl_UsesRequestSchemeAndHost()
-        {
-            // Arrange
-            var fakeQrCodeBytes = new byte[] { 1, 2, 3, 4, 5 };
-            var qrCodeService = new TestQrCodeService(fakeQrCodeBytes);
-
-            var mockConfiguration = new Mock<IConfiguration>();
-            var tableId = 123;
-
-            // Don't set ApplicationUrl so controller falls back to Request.Scheme and Request.Host
-            mockConfiguration.Setup(c => c["ApplicationUrl"]).Returns((string)null);
-
-            // Setup HttpContext for the controller with scheme and host
-            var httpContext = new DefaultHttpContext();
-            httpContext.Request.Scheme = "https";
-            httpContext.Request.Host = new HostString("localhost:5001");
-
-            var controller = new QrCodeController(qrCodeService, mockConfiguration.Object);
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = httpContext
-            };
-
-            // Act
-            var result = controller.GetTableQrCode(tableId);
-
-            // Assert
-            var fileResult = Assert.IsType<FileContentResult>(result);
-            Assert.Equal("image/png", fileResult.ContentType);
-            Assert.Equal(fakeQrCodeBytes, fileResult.FileContents);
-
-            // Verify the  URL
-            var expectedQrContent = $"https://localhost:5001/WILLEM/table/{tableId}";
+            // Verify the URL
+            var expectedQrContent = $"https://willemfrontend-fhfbeaewa5h0e3fw.germanywestcentral-01.azurewebsites.net/table/{tableId}";
             Assert.Equal(expectedQrContent, qrCodeService.LastCalledContent);
         }
 
@@ -94,11 +54,9 @@ namespace Test
             var mockConfiguration = new Mock<IConfiguration>();
             var tableId = 123;
 
-            mockConfiguration.Setup(c => c["ApplicationUrl"]).Returns("https://test.com");
-
             var controller = new QrCodeController(qrCodeService, mockConfiguration.Object);
 
-            // HttpContext for the controller
+            // Setup for the controller
             var httpContext = new DefaultHttpContext();
             controller.ControllerContext = new ControllerContext
             {
