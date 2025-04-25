@@ -9,7 +9,7 @@ namespace Business
 {
     public class QrCodeService
     {
-        public byte[] GenerateQrCode(string content, int pixelsPerModule = 20)
+        public virtual byte[] GenerateQrCode(string content, int pixelsPerModule = 20)
         {
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(content, QRCodeGenerator.ECCLevel.Q);
