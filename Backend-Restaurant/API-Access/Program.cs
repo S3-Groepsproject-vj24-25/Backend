@@ -23,6 +23,8 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderRepository, MockOrderRepository>();
 
+builder.WebHost.UseUrls("http://0.0.0.0:5000");
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -31,11 +33,11 @@ using (var scope = app.Services.CreateScope())
     //var context = services.GetRequiredService<RestaurandDbContext>();
 }
 
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 app.UseHttpsRedirection();
 
