@@ -14,7 +14,7 @@ namespace Dal
     new Order
     {
         Id = 1,
-        TableNumber = 5,
+        TableNumber = "5",
         Status = "Pending",
         IsCompleted = false,
         Items = new List<OrderItem>
@@ -24,10 +24,17 @@ namespace Dal
                 Id = 1,
                 Name = "Burger",
                 Quantity = 1,
-                Price = 8.5m,
-                TotalPrice = 8.5m,
+                UnitPrice = 8.5m,
+                ItemTotal = 8.5m,
                 Type = "Food",
-                Modifications = "",
+                Modifications = new List<OrderItemModification>
+                {
+                    new OrderItemModification
+                    {
+                        Name= "Mod",
+                        Price=0.15m
+                    }
+                },
                 Instructions = "No onions"
             }
         }
@@ -35,7 +42,7 @@ namespace Dal
     new Order
     {
         Id = 2,
-        TableNumber = 3,
+        TableNumber = "3",
         Status = "Pending",
         IsCompleted = false,
         Items = new List<OrderItem>
@@ -45,10 +52,17 @@ namespace Dal
                 Id = 2,
                 Name = "Beer",
                 Quantity = 2,
-                Price = 3.0m,
-                TotalPrice = 6.0m,
+                UnitPrice = 3.0m,
+                ItemTotal = 6.0m,
                 Type = "Drink",
-                Modifications = "",
+                Modifications = new List<OrderItemModification>
+                {
+                    new OrderItemModification
+                    {
+                        Name="Mod",
+                        Price=0.10m
+                    }
+                },
                 Instructions = "Cold"
             }
         }
@@ -56,7 +70,7 @@ namespace Dal
     new Order
     {
         Id = 3,
-        TableNumber = 2,
+        TableNumber = "2",
         Status = "Pending",
         IsCompleted = false,
         Items = new List<OrderItem>
@@ -66,10 +80,17 @@ namespace Dal
                 Id = 3,
                 Name = "Pizza",
                 Quantity = 1,
-                Price = 10.0m,
-                TotalPrice = 10.0m,
+                UnitPrice = 10.0m,
+                ItemTotal = 10.0m,
                 Type = "Food",
-                Modifications = "Extra cheese",
+                Modifications = new List<OrderItemModification>
+                {
+                    new OrderItemModification
+                    {
+                        Name="Extra cheese",
+                        Price=0.5m
+                    }
+                },
                 Instructions = "Well done"
             }
         }
@@ -103,7 +124,7 @@ namespace Dal
             foreach (var item in order.Items)
             {
                 item.Id = ++maxItemId;
-                item.TotalPrice = item.Price * item.Quantity;
+                item.ItemTotal = item.UnitPrice * item.Quantity;
             }
 
             _orders.Add(order);
@@ -125,8 +146,8 @@ namespace Dal
                     Id = item.Id,
                     Name = item.Name,
                     Quantity = item.Quantity,
-                    Price = item.Price,
-                    TotalPrice = item.Price * item.Quantity,
+                    UnitPrice = item.UnitPrice,
+                    ItemTotal = item.UnitPrice * item.Quantity,
                     Modifications = item.Modifications,
                     Instructions = item.Instructions,
                     Type = item.Type

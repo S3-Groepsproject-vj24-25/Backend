@@ -9,7 +9,7 @@ public class RestaurantDbContext : DbContext
     //The default if you set up a local db and named it Backend_Restaurant is: "Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Backend_Restaurant".
     //Change if required.
     protected override void OnConfiguring(DbContextOptionsBuilder options)
-        => options.UseSqlServer(@"Server=localhost\SQLEXPRESS;Initial Catalog=Backend_Restaurant;Integrated Security=True;TrustServerCertificate=True;");
+        => options.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Backend_Restaurant;Integrated Security=True;TrustServerCertificate=True;");
 
 
 

@@ -28,7 +28,7 @@ namespace Business
             order.Status = "Pending";
             foreach (var item in order.Items)
             {
-                item.TotalPrice = item.Price * item.Quantity;
+                item.ItemTotal = item.UnitPrice * item.Quantity;
             }
 
             _orderRepository.AddOrder(order);
