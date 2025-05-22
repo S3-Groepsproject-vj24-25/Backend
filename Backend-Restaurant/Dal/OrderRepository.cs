@@ -1,103 +1,156 @@
-﻿//using Models;
-//using Microsoft.EntityFrameworkCore;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
+using Models;
 
-//namespace Dal
-//{
-//    public class OrderRepository : IOrderRepository
-//    {
-//        private readonly RestaurantDbContext _context;
+namespace Dal
+{
+    public class OrderRepository : IOrderRepository
+    {
+        private readonly RestaurantDbContext _context;
 
-//        public OrderRepository(RestaurantDbContext context)
-//        {
-//            _context = context;
-//        }
+        public OrderRepository(RestaurantDbContext context)
+        {
+            _context = context;
+        }
 
-//        public void AddOrder(Order order)
-//        {
-//            foreach (var item in order.Items)
-//            {
-//                item.TotalPrice = item.Price * item.Quantity;
-//            }
+        public async Task<List<Order>> GetOrdersByType(string type)
+        {
+            var orders = await _context.Orders
+                .Include(o => o.OrderMenuItems)
+                    .ThenInclude(omi => omi.MenuItem)
+                        .ThenInclude(mi => mi.ModificationMenuItems)
+                            .ThenInclude(mmi => mmi.Modification)
+                .Where(o => o.OrderMenuItems.Any(omi => omi.MenuItem.Category == type))
+                .ToListAsync();
 
-//            _context.Orders.Add(order);
-//            _context.SaveChanges();
-//        }
+            return MapToModel(orders);
+        }
 
-//        public void DeleteOrder(int id)
-//        {
-//            var order = _context.Orders
-//                .Include(o => o.Items)
-//                .FirstOrDefault(o => o.Id == id);
+        public async Task<List<Order>> GetOrdersByStatus(string status)
+        {
+            bool isPaid = status.Equals("Paid", StringComparison.OrdinalIgnoreCase);
 
-//            if (order != null)
-//            {
-//                _context.OrderMenuItems.RemoveRange(order.Items);
-//                _context.Orders.Remove(order);
-//                _context.SaveChanges();
-//            }
-//        }
+            var orders = await _context.Orders
+                .Include(o => o.OrderMenuItems)
+                    .ThenInclude(omi => omi.MenuItem)
+                        .ThenInclude(mi => mi.ModificationMenuItems)
+                            .ThenInclude(mmi => mmi.Modification)
+                .Where(o => o.Paid == isPaid)
+                .ToListAsync();
 
-//        public Order GetOrderById(int id)
-//        {
-//            return _context.Orders
-//                .Include(o => o.Items)
-//                .FirstOrDefault(o => o.Id == id);
-//        }
+            return MapToModel(orders);
+        }
 
-//        public List<Order> GetOrdersByStatus(string status)
-//        {
-//            return _context.Orders
-//                .Include(o => o.Items)
-//                .Where(o => o.Status == status)
-//                .ToList();
-//        }
+        public async Task<Order> GetOrderById(int id)
+        {
+            var order = await _context.Orders
+                .Include(o => o.OrderMenuItems)
+                    .ThenInclude(omi => omi.MenuItem)
+                        .ThenInclude(mi => mi.ModificationMenuItems)
+                            .ThenInclude(mmi => mmi.Modification)
+                .FirstOrDefaultAsync(o => o.ID == id);
 
-//        public List<Order> GetOrdersByType(string type)
-//        {
-//            return _context.Orders
-//                .Include(o => o.Items)
-//                .Where(o => o.Items.Any(i => i.Type == type))
-//                .ToList();
-//        }
+            return MapToModel(order);
+        }
 
-//        public void UpdateOrder(Order order)
-//        {
-//            var existing = _context.Orders
-//                .Include(o => o.Items)
-//                .FirstOrDefault(o => o.Id == order.Id);
+        public async Task AddOrder(Order order)
+        {
+            var dbOrder = new Dal.Models.Order
+            {
+                TableID = int.Parse(order.TableNumber),
+                Paid = false,
+                TotalCost = order.Items.Sum(i => i.ItemTotal),
+                Timestamp = DateTime.UtcNow,
+                OrderMenuItems = order.Items.Select(item => new Dal.Models.OrderMenuItem
+                {
+                    MenuItemID = item.Id,
+                    Amount = item.Quantity,
+                    Notes = item.Instructions
+                }).ToList()
+            };
 
-//            if (existing != null)
-//            {
-//                existing.TableNumber = order.TableNumber;
-//                existing.Status = order.Status;
-//                existing.IsCompleted = order.IsCompleted;
+            _context.Orders.Add(dbOrder);
+            await _context.SaveChangesAsync();
 
-//                // Remove existing items
-//                _context.OrderMenuItems.RemoveRange(existing.Items);
+            order.Id = dbOrder.ID;
+        }
 
-//                // Add updated items
-//                foreach (var item in order.Items)
-//                {
-//                    item.TotalPrice = item.Price * item.Quantity;
-//                    existing.Items.Add(item);
-//                }
+        public async Task UpdateOrder(Order order)
+        {
+            var existingOrder = await _context.Orders
+                .Include(o => o.OrderMenuItems)
+                .FirstOrDefaultAsync(o => o.ID == order.Id);
 
-//                _context.SaveChanges();
-//            }
-//        }
+            if (existingOrder == null) return;
 
-//        public void CompleteOrder(int id)
-//        {
-//            var order = _context.Orders.FirstOrDefault(o => o.Id == id);
-//            if (order != null)
-//            {
-//                order.IsCompleted = true;
-//                order.Status = "Completed";
-//                _context.SaveChanges();
-//            }
-//        }
-//    }
-//}
+            existingOrder.TableID = int.Parse(order.TableNumber);
+            existingOrder.Paid = order.IsCompleted;
+            existingOrder.TotalCost = order.Items.Sum(i => i.ItemTotal);
+
+            _context.OrderMenuItems.RemoveRange(existingOrder.OrderMenuItems);
+
+            existingOrder.OrderMenuItems = order.Items.Select(item => new Dal.Models.OrderMenuItem
+            {
+                MenuItemID = item.Id,
+                Amount = item.Quantity,
+                Notes = item.Instructions
+            }).ToList();
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteOrder(int id)
+        {
+            var order = await _context.Orders
+                .Include(o => o.OrderMenuItems)
+                .FirstOrDefaultAsync(o => o.ID == id);
+
+            if (order != null)
+            {
+                _context.Orders.Remove(order);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task CompleteOrder(int id)
+        {
+            var order = await _context.Orders.FindAsync(id);
+            if (order != null)
+            {
+                order.Paid = true;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        private List<Order> MapToModel(List<Dal.Models.Order> dbOrders) =>
+            dbOrders.Select(MapToModel).ToList();
+
+        private Order MapToModel(Dal.Models.Order dbOrder)
+        {
+            if (dbOrder == null) return null;
+
+            return new Order
+            {
+                Id = dbOrder.ID,
+                TableNumber = dbOrder.TableID.ToString(),
+                IsCompleted = dbOrder.Paid,
+                Status = dbOrder.Paid ? "Paid" : "Pending",
+                Items = dbOrder.OrderMenuItems?.Select(omi => new OrderItem
+                {
+                    Id = omi.MenuItemID,
+                    Name = omi.MenuItem?.ProductName,
+                    Quantity = omi.Amount,
+                    UnitPrice = omi.MenuItem?.Price ?? 0,
+                    ItemTotal = (omi.MenuItem?.Price ?? 0) * omi.Amount,
+                    Type = omi.MenuItem?.Category,
+                    Instructions = omi.Notes,
+                    Modifications = omi.MenuItem?.ModificationMenuItems?.Select(mmi => new OrderItemModification
+                    {
+                        Id = mmi.ModificationID,
+                        Name = mmi.Modification?.Name,
+                        Price = mmi.Modification?.Price ?? 0
+                    }).ToList()
+                }).ToList()
+            };
+        }
+    }
+}

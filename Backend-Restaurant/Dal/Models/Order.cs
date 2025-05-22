@@ -8,4 +8,7 @@ public class Order
     public decimal TotalCost { get; set; }
     public DateTime Timestamp { get; set; }
     public Table Table { get; set; }
+    public List<OrderItem> Items { get; set; }
+
+    public ICollection<OrderMenuItem> OrderMenuItems { get; set; }
 }
