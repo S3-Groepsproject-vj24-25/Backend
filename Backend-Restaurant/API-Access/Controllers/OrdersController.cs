@@ -4,6 +4,7 @@ using Models;
 namespace API_Access.Controllers
 {
     [ApiController]
+    [Route("api/[controller]")]
     public class OrdersController : Controller
     {
 
