@@ -14,6 +14,14 @@ namespace API_Access.Controllers
             _orderService = orderService;
         }
 
+        [HttpGet("orders")]
+        public async Task<IActionResult> GetAllOrders()
+        {
+            var orders = await _orderService.GetAllOrders();
+            return Ok(orders);
+        }
+
+
         [HttpGet("kitchen")]
         public async Task<IActionResult> GetKitchenOrders()
         {

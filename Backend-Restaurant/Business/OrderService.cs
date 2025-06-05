@@ -14,6 +14,12 @@ namespace Business
             _orderRepository = orderRepository;
         }
 
+        public async Task<List<Order>> GetAllOrders()
+        {
+            return await _orderRepository.GetAllOrders();
+        }
+
+
         public async Task<List<Order>> GetOrdersByType(string type)
         {
             return await _orderRepository.GetOrdersByType(type);

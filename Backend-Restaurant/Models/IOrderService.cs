@@ -13,5 +13,6 @@ namespace Models
         Task UpdateOrder(Order order);
         Task DeleteOrder(int id);
         Task CompleteOrder(int id);
+        Task<List<Order>> GetAllOrders();
     }
 }

@@ -12,6 +12,18 @@ namespace Dal
             _context = context;
         }
 
+        public async Task<List<Order>> GetAllOrders()
+        {
+            var orders = await _context.Orders
+                .Include(o => o.OrderMenuItems)
+                    .ThenInclude(omi => omi.MenuItem)
+                        .ThenInclude(mi => mi.ModificationMenuItems)
+                            .ThenInclude(mmi => mmi.Modification)
+                .ToListAsync();
+
+            return MapToModel(orders);
+        }
+
         public async Task<List<Order>> GetOrdersByType(string type)
         {
             var orders = await _context.Orders
