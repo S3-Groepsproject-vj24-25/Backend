@@ -11,10 +11,9 @@ namespace Models
     {
         public int Id { get; set; }
         public string OrderId { get; set; } 
-        public string TableNumber { get; set; }
+        public string TableID { get; set; }
         [Required(ErrorMessage = "Type is required.")]
         public List<OrderItem> Items { get; set; } = new List<OrderItem>();
-        public OrderSummary Summary { get; set; } 
         public bool IsCompleted { get; set; }
         [Required]
         public string Status { get; set; } = "Pending"; // should this be saved in db?

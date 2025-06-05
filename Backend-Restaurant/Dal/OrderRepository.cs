@@ -68,7 +68,7 @@ namespace Dal
         {
             var dbOrder = new Dal.Models.Order
             {
-                TableID = int.Parse(order.TableNumber),
+                TableID = int.Parse(order.TableID),
                 Paid = false,
                 TotalCost = order.Items.Sum(i => i.ItemTotal),
                 Timestamp = DateTime.UtcNow,
@@ -94,7 +94,7 @@ namespace Dal
 
             if (existingOrder == null) return;
 
-            existingOrder.TableID = int.Parse(order.TableNumber);
+            existingOrder.TableID = int.Parse(order.TableID);
             existingOrder.Paid = order.IsCompleted;
             existingOrder.TotalCost = order.Items.Sum(i => i.ItemTotal);
 
@@ -143,7 +143,7 @@ namespace Dal
             return new Order
             {
                 Id = dbOrder.ID,
-                TableNumber = dbOrder.TableID.ToString(),
+                TableID = dbOrder.TableID.ToString(),
                 IsCompleted = dbOrder.Paid,
                 Status = dbOrder.Paid ? "Paid" : "Pending",
                 Items = dbOrder.OrderMenuItems?.Select(omi => new OrderItem
