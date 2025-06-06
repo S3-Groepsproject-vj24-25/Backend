@@ -1,19 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Models
 {
     public interface IOrderRepository
     {
-        List<Order> GetOrdersByType(string type);
-        List<Order> GetOrdersByStatus(string status);
-        Order GetOrderById(int id);
-        void AddOrder(Order order);
-        void UpdateOrder(Order order);
-        void DeleteOrder(int id);
-        void CompleteOrder(int id);
+        Task<List<Order>> GetOrdersByType(string type);
+        Task<List<Order>> GetOrdersByStatus(string status);
+        Task<Order> GetOrderById(int id);
+        Task AddOrder(Order order);
+        Task UpdateOrder(Order order);
+        Task DeleteOrder(int id);
+        Task CompleteOrder(int id);
+        Task<List<Order>> GetAllOrders();
+
     }
 }

@@ -5,12 +5,10 @@ namespace Dal;
 
 public class RestaurantDbContext : DbContext
 {
-    //Here you have to change the connection string.
-    //The default if you set up a local db and named it Backend_Restaurant is: "Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Backend_Restaurant".
-    //Change if required.
-    protected override void OnConfiguring(DbContextOptionsBuilder options)
-        => options.UseSqlServer(@"Server=localhost\SQLEXPRESS;Initial Catalog=Backend_Restaurant;Integrated Security=True;TrustServerCertificate=True;");
-
+    public RestaurantDbContext(DbContextOptions<RestaurantDbContext> options)
+            : base(options)
+    {
+    }
 
 
     public DbSet<Table> Tables { get; set; }
@@ -23,24 +21,46 @@ public class RestaurantDbContext : DbContext
     public DbSet<ModificationMenuItem> ModificationMenuItems { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Order <--> OrderMenuItems
         modelBuilder.Entity<OrderMenuItem>()
-            .HasOne(o => o.Order)
-            .WithMany()
-            .HasForeignKey(o => o.OrderID);
+            .HasOne(omi => omi.Order)
+            .WithMany(o => o.OrderMenuItems)
+            .HasForeignKey(omi => omi.OrderID);
 
+        // OrderMenuItem <--> MenuItem
         modelBuilder.Entity<OrderMenuItem>()
-            .HasOne(m => m.MenuItem)
-            .WithMany()
-            .HasForeignKey(m => m.MenuItemID);
+            .HasOne(omi => omi.MenuItem)
+            .WithMany(m => m.OrderMenuItems)
+            .HasForeignKey(omi => omi.MenuItemID);
 
+        // AdditionMenuItem <--> Addition
         modelBuilder.Entity<AdditionMenuItem>()
-            .HasOne(a => a.Addition)
-            .WithMany()
-            .HasForeignKey(a => a.AdditionsID);
+            .HasOne(ami => ami.Addition)
+            .WithMany() // No navigation from Addition
+            .HasForeignKey(ami => ami.AdditionsID);
 
+        // AdditionMenuItem <--> MenuItem
         modelBuilder.Entity<AdditionMenuItem>()
-            .HasOne(m => m.MenuItem)
-            .WithMany()
-            .HasForeignKey(m => m.MenuItemID);
+            .HasOne(ami => ami.MenuItem)
+            .WithMany() // No navigation from MenuItem to AdditionMenuItems
+            .HasForeignKey(ami => ami.MenuItemID);
+
+        // ModificationMenuItem <--> Modification
+        modelBuilder.Entity<ModificationMenuItem>()
+            .HasOne(mmi => mmi.Modification)
+            .WithMany(m => m.ModificationMenuItems)
+            .HasForeignKey(mmi => mmi.ModificationID);
+
+        // ModificationMenuItem <--> MenuItem
+        modelBuilder.Entity<ModificationMenuItem>()
+            .HasOne(mmi => mmi.MenuItem)
+            .WithMany(m => m.ModificationMenuItems)
+            .HasForeignKey(mmi => mmi.MenuItemID);
+
+        // IGNORE unwanted relation if EF still infers one
+        modelBuilder.Entity<ModificationMenuItem>()
+            .Ignore("OrderMenuItem"); // This line helps prevent EF from trying to use OrderMenuItemID if it still sees the nav somehow
     }
+
+
 }

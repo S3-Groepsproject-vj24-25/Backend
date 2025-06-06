@@ -1,5 +1,7 @@
 ﻿using Models;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Business
 {
@@ -12,62 +14,67 @@ namespace Business
             _orderRepository = orderRepository;
         }
 
-        public List<Order> GetOrdersByType(string type)
+        public async Task<List<Order>> GetAllOrders()
         {
-            return _orderRepository.GetOrdersByType(type);
+            return await _orderRepository.GetAllOrders();
         }
 
-        public Order GetOrderById(int id)
+
+        public async Task<List<Order>> GetOrdersByType(string type)
         {
-            return _orderRepository.GetOrderById(id);
+            return await _orderRepository.GetOrdersByType(type);
         }
 
-        public void AddOrder(Order order)
+        public async Task<Order> GetOrderById(int id)
         {
-            
+            return await _orderRepository.GetOrderById(id);
+        }
+
+        public async Task AddOrder(Order order)
+        {
             order.Status = "Pending";
             foreach (var item in order.Items)
             {
-                item.TotalPrice = item.Price * item.Quantity;
+                item.ItemTotal = item.UnitPrice * item.Quantity;
             }
 
-            _orderRepository.AddOrder(order);
+            await _orderRepository.AddOrder(order);
         }
 
-        public void UpdateOrder(Order order)
+        public async Task UpdateOrder(Order order)
         {
-            _orderRepository.UpdateOrder(order);
+            await _orderRepository.UpdateOrder(order);
         }
 
-        public void DeleteOrder(int id)
+        public async Task DeleteOrder(int id)
         {
-            _orderRepository.DeleteOrder(id);
+            await _orderRepository.DeleteOrder(id);
         }
 
-        public void StartOrderPreparation(int id)
+        public async Task StartOrderPreparation(int id)
         {
-            var order = _orderRepository.GetOrderById(id);
+            var order = await _orderRepository.GetOrderById(id);
             if (order != null)
             {
                 order.Status = "Preparing";
-                _orderRepository.UpdateOrder(order);
+                await _orderRepository.UpdateOrder(order);
             }
         }
 
-        public void CompleteOrder(int id)
+        public async Task CompleteOrder(int id)
         {
-            var order = _orderRepository.GetOrderById(id);
+            var order = await _orderRepository.GetOrderById(id);
             if (order != null)
             {
-                order.Status = "Completed"; 
+                order.Status = "Completed";
                 order.IsCompleted = true;
-                _orderRepository.UpdateOrder(order);
+                await _orderRepository.UpdateOrder(order);
             }
         }
 
-        public List<Order> GetOrdersByStatus(string status)
+        public async Task<List<Order>> GetOrdersByStatus(string status)
         {
-            return _orderRepository.GetOrdersByStatus(status);
+            return await _orderRepository.GetOrdersByStatus(status);
         }
     }
 }
