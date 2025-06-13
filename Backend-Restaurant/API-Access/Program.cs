@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 
 builder.Services.AddCors(options =>
 {
@@ -69,5 +70,7 @@ app.UseCors(builder =>
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<API_Access.Hubs.HelpHub>("/helpHub");
+
 
 app.Run();
