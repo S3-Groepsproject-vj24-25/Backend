@@ -143,9 +143,11 @@ namespace Dal
             return new Order
             {
                 Id = dbOrder.ID,
+                OrderId = Convert.ToString(dbOrder.ID),
                 TableID = dbOrder.TableID.ToString(),
                 IsCompleted = dbOrder.Paid,
                 Status = dbOrder.Paid ? "Paid" : "Pending",
+                Timestamp = dbOrder.Timestamp,
                 Items = dbOrder.OrderMenuItems?.Select(omi => new OrderItem
                 {
                     Id = omi.MenuItemID,

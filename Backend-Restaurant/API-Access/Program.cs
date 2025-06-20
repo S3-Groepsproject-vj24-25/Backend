@@ -32,7 +32,7 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 var app = builder.Build();
 
-app.UseCors(builder =>
+        app.UseCors(builder =>
 {
     builder
         .WithOrigins("http://localhost:3000")

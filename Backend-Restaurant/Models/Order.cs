@@ -17,7 +17,7 @@ namespace Models
         public bool IsCompleted { get; set; }
         [Required]
         public string Status { get; set; } = "Pending"; // should this be saved in db?
-        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+        public DateTime Timestamp { get; set; }
     }
 
     public class OrderSummary
